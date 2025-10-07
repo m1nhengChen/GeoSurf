@@ -15,6 +15,7 @@ It supports three major algorithms:
 
 ---
 ![illustration](./Data/fig1.png)
+*Geodesic and Euclidean distance visualizations on the cortical surface.Top row shows the input with seed and two geodesic transforms; bottom row shows Euclidean distance and the difference maps (Heat−Euclid, Dijkstra−Euclid).*
 ![2D example](./Data/diff_distributions_combined.png)
 *A comparison of vertex-wise distance difference distributions. (a) shows the difference between heat-based and Euclidean distances, (b) shows the difference between Dijkstra-based and Euclidean distances.*
 ## Features
