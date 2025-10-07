@@ -14,7 +14,8 @@ It supports three major algorithms:
 - **Euclid** – Straight-line 3D distance (baseline reference)
 
 ---
-
+![2D example](./fig/2d_example.png)
+*A comparison of vertex-wise distance difference distributions. (a) shows the difference between heat-based and Euclidean distances, (b) shows the difference between Dijkstra-based and Euclidean distances.*
 ## Features
 
 - 🔹 Read and write both `.vtk` (legacy) and `.vtp` (XML) PolyData formats  
@@ -37,4 +38,25 @@ source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+```
+## CLI Usage
+```bash
+# Heat-based geodesic (requires potpourri3d)
+geosurf --vtk lh.white.vtk --seed-id 123 --algo heat --out lh.white_heat.vtk
+
+# Dijkstra-based geodesic with multiple seeds
+geosurf --vtk surf.vtp --seeds 10,42,77 --algo dijkstra --combine min --out out.vtp
+
+# Euclidean baseline
+geosurf --vtk lh.white.vtk --seed-id 123 --algo euclid --out lh.white_euclid.vtk
+
+```
+## Python API
+```bash
+from geosurf.transform import read_polydata, compute_heat_potpourri
+
+poly = read_polydata("lh.white.vtk")
+out = compute_heat_potpourri(poly, seeds=[123], array_name="HeatDist")
+
+```
 
