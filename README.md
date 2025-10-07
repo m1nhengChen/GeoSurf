@@ -51,7 +51,6 @@ geosurf --vtk surf.vtp --seeds 10,42,77 --algo dijkstra --combine min --out out.
 
 # Euclidean baseline
 geosurf --vtk lh.white.vtk --seed-id 123 --algo euclid --out lh.white_euclid.vtk
-
 ```
 ## Python API
 ```bash
@@ -59,6 +58,9 @@ from geosurf.transform import read_polydata, compute_heat_potpourri
 
 poly = read_polydata("lh.white.vtk")
 out = compute_heat_potpourri(poly, seeds=[123], array_name="HeatDist")
-
 ```
+## Acknowledgments
+* [VTK](https://vtk.org/) for mesh handling
+* [Potpourri3D](https://github.com/nmwsharp/potpourri3d) for the heat method implementation
+* This project was inspired by practical needs in neuroimaging surface analysis workflows.
 
