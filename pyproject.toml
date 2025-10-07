@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "GeoSurf"
+version = "0.1.0"
+description = "Geodesic & Euclidean distance transforms on surface meshes (VTK/VTP)."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+authors = [{ name = "Minheng Chen" }]
+keywords = ["geodesic", "mesh", "surface", "VTK", "neuroimaging", "distance"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: Visualization",
+  "Topic :: Scientific/Engineering :: Medical Science Apps."
+]
+
+dependencies = [
+  "numpy>=1.21,<2.0",   # 保守上限，兼容科学栈
+  "vtk>=9.1"
+]
+
+[project.optional-dependencies]
+heat = ["potpourri3d>=0.0.7"]  # 仅在需要 heat 方法时安装
+
+[project.scripts]
+geosurf = "geosurf.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["geosurf*"]
