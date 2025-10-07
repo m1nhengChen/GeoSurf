@@ -14,6 +14,7 @@ It supports three major algorithms:
 - **Euclid** – Straight-line 3D distance (baseline reference)
 
 ---
+![illustration](./Data/fig1.png)
 ![2D example](./Data/diff_distributions_combined.png)
 *A comparison of vertex-wise distance difference distributions. (a) shows the difference between heat-based and Euclidean distances, (b) shows the difference between Dijkstra-based and Euclidean distances.*
 ## Features
