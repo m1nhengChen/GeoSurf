@@ -19,12 +19,11 @@ It supports three major algorithms:
 ![2D example](./Data/diff_distributions_combined.png)
 *A comparison of vertex-wise distance difference distributions. (a) shows the difference between heat-based and Euclidean distances, (b) shows the difference between Dijkstra-based and Euclidean distances.*
 ## Features
-
-- 🔹 Read and write both `.vtk` (legacy) and `.vtp` (XML) PolyData formats  
-- 🔹 Compute per-vertex distance to one or multiple seed points  
-- 🔹 Output results as scalar arrays ready for visualization in ParaView or FreeView  
-- 🔹 CLI and library-level API (both supported)  
-- 🔹 Cross-platform, lightweight dependencies  
+🔹 Read and write both `.vtk` (legacy) and `.vtp` (XML) PolyData formats  
+🔹 Compute per-vertex distance to one or multiple seed points  
+🔹 Output results as scalar arrays ready for visualization in ParaView or FreeView  
+🔹 CLI and library-level API (both supported)  
+🔹 Cross-platform, lightweight dependencies  
 
 ---
 
