@@ -211,27 +211,58 @@ def compute_heat_potpourri(
     poly: vtk.vtkPolyData,
     seeds: List[int],
     array_name: str = "HeatDistance",
+    combine: str = "min",
+    stack: bool = False,
 ) -> vtk.vtkPolyData:
     """
-    Heat method via potpourri3d. Returns distance to the nearest seed.
+    Compute geodesic distances using the Heat Method via potpourri3d.
 
-    Advantages
+    Parameters
     ----------
-    - Good accuracy on many meshes
-    - Factorizes internal operators once, giving fast queries
+    poly : vtk.vtkPolyData
+        Input triangulated mesh.
+    seeds : List[int]
+        List of seed vertex indices.
+    array_name : str
+        Name of the scalar field to store distances.
+    combine : {"min", "mean", "sum"}
+        How to combine distances when multiple seeds are provided:
+          - "min": distance to the nearest seed (fast, default)
+          - "mean": average distance across all seeds
+          - "sum": sum of distances to all seeds
+    stack : bool
+        If True, write per-seed distance arrays as well.
 
-    Requirements
-    ------------
-    - potpourri3d must be installed
-    - Triangulated mesh
+    Returns
+    -------
+    vtk.vtkPolyData
+        The same mesh with a new scalar array containing geodesic distances.
     """
     if pp3d is None:
         raise RuntimeError("potpourri3d is not installed; cannot use --algo heat")
 
+    # Convert VTK PolyData to (V, F) arrays
     V, F = extract_VF(poly)
-    solver = pp3d.MeshHeatMethodDistanceSolver(V, F)
-    dist = solver.compute_distance_multisource(seeds)  # (n_pts,)
 
+    # Initialize solver (factorization is reused for multiple seeds)
+    solver = pp3d.MeshHeatMethodDistanceSolver(V, F)
+
+    if combine == "min":
+        # Multi-source computation: computes distance to the nearest seed efficiently
+        dist = solver.compute_distance_multisource(seeds)
+        per_seed = None
+    else:
+        # Compute distance from each seed separately, then combine
+        per_seed = [solver.compute_distance(s) for s in seeds]  # list of (n_pts,)
+        stack_np = np.vstack(per_seed)  # shape = (n_seeds, n_pts)
+        if combine == "mean":
+            dist = stack_np.mean(axis=0)
+        elif combine == "sum":
+            dist = stack_np.sum(axis=0)
+        else:
+            dist = stack_np.min(axis=0)
+
+    # Create output mesh and attach the distance array
     out = vtk.vtkPolyData()
     out.ShallowCopy(poly)
 
@@ -242,8 +273,18 @@ def compute_heat_potpourri(
         arr.SetValue(i, float(d))
     out.GetPointData().AddArray(arr)
     out.GetPointData().SetScalars(arr)
-    return out
 
+    # Optionally, write per-seed distance fields
+    if stack and per_seed is not None:
+        for idx, vec in enumerate(per_seed):
+            a = vtk.vtkDoubleArray()
+            a.SetName(f"{array_name}_seed{idx}")
+            a.SetNumberOfValues(len(vec))
+            for i, d in enumerate(vec):
+                a.SetValue(i, float(d))
+            out.GetPointData().AddArray(a)
+
+    return out
 
 def compute_euclid_distance(
     poly: vtk.vtkPolyData,
@@ -387,7 +428,9 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     # --- Run
     if algo == "heat":
-        out_poly = compute_heat_potpourri(poly_tri, seeds, args.array_name)
+        out_poly = compute_heat_potpourri(
+    poly_tri, seeds, args.array_name, combine=args.combine, stack=args.stack
+        )
     elif algo == "dijkstra":
         out_poly = compute_dijkstra_multi(
             poly_tri, seeds, args.array_name, combine=args.combine, stack=args.stack
