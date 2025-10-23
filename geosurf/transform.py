@@ -186,7 +186,7 @@ def compute_dijkstra_multi(
             combined = stack_np.min(axis=0)  # "min"
 
     out = vtk.vtkPolyData()
-    out.ShallowCopy(poly)
+    out.DeepCopy(poly)
 
     def to_vtk_array(name: str, arr: _np.ndarray) -> vtk.vtkDoubleArray:
         v = vtk.vtkDoubleArray()
@@ -198,7 +198,7 @@ def compute_dijkstra_multi(
 
     arr_comb = to_vtk_array(array_name, combined)
     out.GetPointData().AddArray(arr_comb)
-    out.GetPointData().SetScalars(arr_comb)
+    # out.GetPointData().SetScalars(arr_comb)
 
     if stack and len(per_seed) > 1:
         for idx, arr_np in enumerate(per_seed):
@@ -264,7 +264,7 @@ def compute_heat_potpourri(
 
     # Create output mesh and attach the distance array
     out = vtk.vtkPolyData()
-    out.ShallowCopy(poly)
+    out.DeepCopy(poly)
 
     arr = vtk.vtkDoubleArray()
     arr.SetName(array_name)
@@ -272,7 +272,7 @@ def compute_heat_potpourri(
     for i, d in enumerate(dist):
         arr.SetValue(i, float(d))
     out.GetPointData().AddArray(arr)
-    out.GetPointData().SetScalars(arr)
+    # out.GetPointData().SetScalars(arr)
 
     # Optionally, write per-seed distance fields
     if stack and per_seed is not None:
@@ -285,6 +285,7 @@ def compute_heat_potpourri(
             out.GetPointData().AddArray(a)
 
     return out
+
 
 def compute_euclid_distance(
     poly: vtk.vtkPolyData,
@@ -312,7 +313,7 @@ def compute_euclid_distance(
     dist = np.sqrt(minsq)
 
     out = vtk.vtkPolyData()
-    out.ShallowCopy(poly)
+    out.DeepCopy(poly)
 
     arr = vtk.vtkDoubleArray()
     arr.SetName(array_name)
@@ -320,7 +321,7 @@ def compute_euclid_distance(
     for i, d in enumerate(dist):
         arr.SetValue(i, float(d))
     out.GetPointData().AddArray(arr)
-    out.GetPointData().SetScalars(arr)
+    # out.GetPointData().SetScalars(arr)
     return out
 
 # --- CLI ----------------------------------------------------------------------
@@ -354,7 +355,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     p.add_argument("--algo", choices=["auto", "dijkstra", "heat", "euclid"], default="auto",
                    help="Which distance algorithm to use")
 
-    p.add_argument("--array-name", default="Distance",
+    p.add_argument("--array-name", default="Geo_Transform",
                    help="Name of the output point-data scalar array")
 
     p.add_argument("--combine", choices=["min", "mean", "sum"], default="min",
@@ -431,6 +432,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         out_poly = compute_heat_potpourri(
     poly_tri, seeds, args.array_name, combine=args.combine, stack=args.stack
         )
+
     elif algo == "dijkstra":
         out_poly = compute_dijkstra_multi(
             poly_tri, seeds, args.array_name, combine=args.combine, stack=args.stack
