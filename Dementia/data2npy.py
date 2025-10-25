@@ -41,7 +41,9 @@ Rules implemented (as provided by user):
 - Statistics: per-site and overall, per group:
   counts, age mean±std (ignoring NaN), and gender counts.
 
-Author: You :)
+Author: Minheng Chen
+Date: 10/25/2025
+python data2npy.py --mat-dir /mnt/raid/data_cambridge/MIND_DKT--out-npy DKT.npy; 
 """
 
 import argparse
