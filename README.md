@@ -63,3 +63,15 @@ out = compute_heat_potpourri(poly, seeds=[123], array_name="HeatDist")
 * [Potpourri3D](https://github.com/nmwsharp/potpourri3d) for the heat method implementation
 * This project was inspired by practical needs in neuroimaging surface analysis workflows.
 
+## Citation
+If you find this code for your research, please cite our paper:
+```
+@inproceedings{chen2026folding,
+  title={Folding-Fiducial Geodesic Representation for Morphometric Similarity Networks in Neurodegenerative Disease Characterization},
+  author={Chen, Minheng and Chen, Tong and Cao, Chao and Zhang, Jing and Su, li and Liu, Tianming and Zhu, Dajiang},
+  booktitle={2026 IEEE International Symposium on Biomedical Imaging (ISBI)},
+  year={2026},
+  pages={1-4},
+  organization={IEEE}
+}
+```
